@@ -17,5 +17,5 @@ new_maze = []
 new_maze = Algorithms.maze_generator()
 print(new_maze)
 
-# Algorithms.dfs(Algorithms.s[0], Algorithms.s[1])
+Algorithms.bfs(Algorithms.s[0], Algorithms.s[1])
 Maze.draw_maze(new_maze, Algorithms.Path)

@@ -186,21 +186,26 @@ def bfs(i, j):
     board1[f[0]][f[1]] = "F"
 
 
-def maze_generator(b=11, w=11):
-    breadth, width = b, w
-    maze = [['X' for _ in range(b)] for _ in range(w)]
-    visited = [[False for _ in range(b)] for _ in range(w)]
+def maze_generator(N=18):
+    loop_counter = 0
+    breadth, width = N, N
+    maze = [['X' for _ in range(N)] for _ in range(N)]
+    visited = [[False for _ in range(N)] for _ in range(N)]
     # vertical = [["|  "] * w + ['|'] for _ in range(b)] + [[]]
     # horizontal = [["+--"] * w + ['+'] for _ in range(w + 1)]
 
-    for b in range(breadth):
-        for w in range(width):
-            maze[w][b] = 'X'
-    for b in range(breadth):
-        for w in range(width):
-            visited[w][b] = False
+    for N in range(breadth):
+        for N in range(width):
+            maze[N][N] = 'X'
+    for N in range(breadth):
+        for N in range(width):
+            visited[N][N] = False
 
     def create_maze(s2, s1):
+
+        if s2 == 0 or s2 == N or s1 == 0 or s1 == N and loop_counter == 0:
+            counter = 1
+            return create_maze(2, 2)
 
         visited[s2][s1] = True  # Start
         maze[s2][s1] = ' '
@@ -208,22 +213,22 @@ def maze_generator(b=11, w=11):
         neighbours = [(s1 - 1, s2), (s1, s2 + 1), (s1 + 1, s2), (s1, s2 - 1)]
         shuffle(neighbours)
 
-        for (x, y) in neighbours:
-            if 0 <= x <= b - 1 and 0 <= y <= w - 1:
+        for (y, x) in neighbours:
+            if 1 <= x <= N - 1 and 1 <= y <= N - 1:
                 if visited[y][x]:
                     continue
-                if visited[x-1][y] and visited[x][y-1]:
-                    visited[x-1][y-1] = True
-                    maze[x-1][y-1] = 'X'
-                if visited[x-1][y] and visited[x][y+1]:
-                    visited[x-1][y+1] = True
-                    maze[x-1][y+1] = 'X'
-                if visited[x+1][y] and visited[x][y+1]:
-                    visited[x+1][y+1] = True
-                    maze[x+1][y+1] = 'X'
-                if visited[x+1][y] and visited[x][y-1]:
-                    visited[x+1][y-1] = True
-                    maze[x+1][y-1] = 'X'
+                if visited[y-1][x] and visited[y][x-1]:
+                    visited[y-1][x-1] = True
+                    # maze[x-1][y-1] = 'X'
+                if visited[y-1][x] and visited[y][x+1]:
+                    visited[y-1][x+1] = True
+                    # maze[x-1][y+1] = 'X'
+                if visited[y+1][x] and visited[y][x+1]:
+                    visited[y+1][x+1] = True
+                    # maze[x+1][y+1] = 'X'
+                if visited[y+1][x] and visited[y][x-1]:
+                    visited[y+1][x-1] = True
+                    # maze[x+1][y-1] = 'X'
 
 
 
@@ -258,12 +263,14 @@ def maze_generator(b=11, w=11):
                 print('\n'.join([''.join(['{:4}'.format(item) for item in row])
                                  for row in maze]))
                 print('\n')
+
                 create_maze(y, x)
 
-    create_maze(randrange(b), randrange(w))
+    create_maze(randrange(N), randrange(N))
+    counter = 0
 
-    start_x = randrange(0, int(breadth/4))
-    start_y = randrange(0, int(width/4))
+    start_x = randrange(1, int(breadth/4))
+    start_y = randrange(1, int(width/4))
     finish_x = randrange(int(3*breadth/4), breadth-1)
     finish_y = randrange(int(3*width/4), width-1)
     maze[start_x][start_y] = 'S'
