@@ -20,6 +20,7 @@ board1 = [
     ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
 ]
 
+
 class Block(turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
