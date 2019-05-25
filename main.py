@@ -5,17 +5,7 @@ from pprint import pprint
 boards = []
 boards.append(Maze.board1)
 
-#Algorithms.dfs(Algorithms.s[0], Algorithms.s[1])
-#Maze.draw_maze(Maze.boards[0], Algorithms.Path)
-
-#Algorithms.dfsRandom(Algorithms.s[0], Algorithms.s[1])
-#Maze.draw_maze(Maze.boards[0], Algorithms.Path)
-
-# Algorithms.dfs(Algorithms.s[0], Algorithms.s[1])
-# Maze.draw_maze(Maze.boards[0], Algorithms.Path)
-new_maze = []
 new_maze = Algorithms.maze_generator()
-print(new_maze)
-
-Algorithms.bfs(Algorithms.s[0], Algorithms.s[1])
-Maze.draw_maze(new_maze, Algorithms.Path)
+boards.append(new_maze)
+new_maze.bfs(new_maze.s.x, new_maze.s.y)
+Maze.draw_maze(new_maze.grid, new_maze.Path)

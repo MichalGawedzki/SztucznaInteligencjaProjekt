@@ -1,189 +1,186 @@
 import Maze
 import queue
 from random import randrange, shuffle, random
+import random
 import numpy as np
 
-board1 = Maze.board1
-N = len(board1)  # rows
-M = len(board1[0])  # columns
-
-ifVisited = [[0 for x in range(M)] for y in range(N)]  # 2d array telling if we already visited particular block
-
-# searching for START and FINISH locations
-for i in range(len(board1)):
-    for j in range(len(board1[i])):
-        if board1[i][j] == "S":
-            s = [i, j]  # coordinates of START
-        if board1[i][j] == "F":
-            f = [i, j]  # coordinates of FINISH
-
-Path = []  # Contains solution path (not in bfs yet)
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 
-# recursive search with DFS (random order of directions)
-def dfsRandom(i, j):
-    # adds to stack
-    Path.append([i, j])
-    ifVisited[i][j] = 1
+class Maze:
 
-    if board1[i][j] == "F":
-        # print("Found solution")
-        return True
+    def __init__(self, grid, s_x, s_y, f_x, f_y):
+        # self.s_x = s_x
+        # self.s_y = s_y
+        # self.f_x = f_x
+        # self.f_y = f_y
+        self.grid = grid
+        self.s = Point(s_x, s_y)
+        self.f = Point(f_x, f_y)
+        self.Path = []
+        self.M = len(self.grid[0])
+        self.N = len(self.grid)
+        self.ifVisited = [[0 for x in range(self.M)] for y in range(self.N)]  # 2d array telling if we already visited particular block
 
-    for x in range(20):
+    # recursive search with DFS (up -> right -> down -> left)
+    def dfs(self, i, j):
 
-        rand = random.randint(0, 3)
+        # adds to queue
+        #if self.grid[self.s.x][self.s.y] != 'S':
+        self.Path.append([i, j])
+        self.ifVisited[i][j] = 1
 
-        # up
-        if rand == 0:
-            if 0 <= i - 1 <= N - 1 and 0 <= j <= M - 1:
-                if board1[i - 1][j] != "X" and ifVisited[i - 1][j] == 0:
-                    # print("u -> ", end = '')
-                    if dfsRandom(i - 1, j) == True:
-                        board1[i][j] = "1"
-                        board1[s[0]][s[1]] = "S"
-                        return True
-
-        # right
-        elif rand == 1:
-
-            if 0 <= i <= N - 1 and 0 <= j + 1 <= M - 1:
-                if board1[i][j + 1] != "X" and ifVisited[i][j + 1] == 0:
-                    # print("r -> ", end = '')
-                    if dfsRandom(i, j + 1) == True:
-                        board1[i][j] = "1"
-                        board1[s[0]][s[1]] = "S"
-                        return True
-
-        # down
-        elif rand == 2:
-            if 0 <= i + 1 <= N - 1 and 0 <= j <= M - 1:
-                if board1[i + 1][j] != "X" and ifVisited[i + 1][j] == 0:
-                    # print("d -> ", end = '')
-                    if dfsRandom(i + 1, j) == True:
-                        board1[i][j] = "1"
-                        board1[s[0]][s[1]] = "S"
-                        return True
-
-        # left
-        elif rand == 3:
-            if 0 <= i <= N - 1 and 0 <= j - 1 <= M - 1:
-                if board1[i][j - 1] != "X" and ifVisited[i][j - 1] == 0:
-                    # print("l -> ", end = '')
-                    if dfsRandom(i, j - 1) == True:
-                        board1[i][j] = "1"
-                        board1[s[0]][s[1]] = "S"
-                        return True
-
-    # Removes from stack
-    Path.pop()
-    board1[s[0]][s[1]] = "S"
-    return False
-
-
-# recursive search with DFS (up -> right -> down -> left)
-def dfs(i, j):
-    # print("dfs")
-    # adds to queue
-    Path.append([i, j])
-    ifVisited[i][j] = 1
-
-    if board1[i][j] == "F":
-        # print("Found solution")
-        return True
-
-    # up
-    if 0 <= i - 1 <= N - 1 and 0 <= j <= M - 1:
-        if board1[i - 1][j] != "X" and ifVisited[i - 1][j] == 0:
-            # print("u -> ", end = '')
-            if dfs(i - 1, j) == True:
-                board1[i][j] = "1"
-                board1[s[0]][s[1]] = "S"
-                return True
-
-    # right
-    if 0 <= i <= N - 1 and 0 <= j + 1 <= M - 1:
-        if board1[i][j + 1] != "X" and ifVisited[i][j + 1] == 0:
-            # print("r -> ", end = '')
-            if dfs(i, j + 1) == True:
-                board1[i][j] = "1"
-                board1[s[0]][s[1]] = "S"
-                return True
-
-    # down
-    if 0 <= i + 1 <= N - 1 and 0 <= j <= M - 1:
-        if board1[i + 1][j] != "X" and ifVisited[i + 1][j] == 0:
-            # print("d -> ", end = '')
-            if dfs(i + 1, j) == True:
-                board1[i][j] = "1"
-                board1[s[0]][s[1]] = "S"
-                return True
-
-    # left
-    if 0 <= i <= N - 1 and 0 <= j - 1 <= M - 1:
-        if board1[i][j - 1] != "X" and ifVisited[i][j - 1] == 0:
-            # print("l -> ", end = '')
-            if dfs(i, j - 1) == True:
-                board1[i][j] = "1"
-                board1[s[0]][s[1]] = "S"
-                return True
-
-    # Removes from queue
-    Path.pop()
-    board1[s[0]][s[1]] = "S"
-    return False
-
-
-def bfs(i, j):
-    Q = queue.Queue(maxsize=0)
-
-    Q.put([i, j])
-    # Q.put([i,j])
-    current = Q.get()
-
-    ifVisited[i][j] = 1
-
-    while board1[current[0]][current[1]] != "F":
+        if self.grid[i][j] == "F":
+            # print("Found solution")
+            return True # 'True' ends dfs and begins to roll recursion back
 
         # up
-        if 0 <= i - 1 <= N - 1 and 0 <= j <= M - 1:
-            if board1[i - 1][j] != "X" and ifVisited[i - 1][j] == 0:
+
+        if 0 <= i - 1 <= self.N - 1 and 0 <= j <= self.M - 1: # if block is still in maze's height and width
+            if self.grid[i - 1][j] != "X" and self.ifVisited[i - 1][j] == 0: # if block is not 'X' and if not visited before
                 # print("u -> ", end = '')
-                Q.put([i - 1, j])
+                if self.dfs(i - 1, j) == True:
+                    self.grid[i][j] = "1"
+                    self.grid[self.s.x][self.s.y] = "S"
+                    return True
 
         # right
-        if 0 <= i <= N - 1 and 0 <= j + 1 <= M - 1:
-            if board1[i][j + 1] != "X" and ifVisited[i][j + 1] == 0:
+        if 0 <= i <= self.N - 1 and 0 <= j + 1 <= self.M - 1:
+            if self.grid[i][j + 1] != "X" and self.ifVisited[i][j + 1] == 0:
                 # print("r -> ", end = '')
-                Q.put([i, j + 1])
+                if self.dfs(i, j + 1) == True:
+                    self.grid[i][j] = "1"
+                    self.grid[self.s.x][self.s.y] = "S"
+                    return True
 
         # down
-        if 0 <= i + 1 <= N - 1 and 0 <= j <= M - 1:
-            if board1[i + 1][j] != "X" and ifVisited[i + 1][j] == 0:
+        if 0 <= i + 1 <= self.N - 1 and 0 <= j <= self.M - 1:
+            if self.grid[i + 1][j] != "X" and self.ifVisited[i + 1][j] == 0:
                 # print("d -> ", end = '')
-                Q.put([i + 1, j])
+                if self.dfs(i + 1, j) == True:
+                    self.grid[i][j] = "1"
+                    self.grid[self.s.x][self.s.y] = "S"
+                    return True
 
         # left
-        if 0 <= i <= N - 1 and 0 <= j - 1 <= M - 1:
-            if board1[i][j - 1] != "X" and ifVisited[i][j - 1] == 0:
+        if 0 <= i <= self.N - 1 and 0 <= j - 1 <= self.M - 1:
+            if self.grid[i][j - 1] != "X" and self.ifVisited[i][j - 1] == 0:
                 # print("l -> ", end = '')
-                Q.put([i, j - 1])
+                if self.dfs(i, j - 1) == True:
+                    self.grid[i][j] = "1"
+                    self.grid[self.s.x][self.s.y] = "S"
+                    return True
+        # Removes from queue
+        self.Path.pop()
+        self.grid[self.s.x][self.s.y] = "S"
+        return False
 
+    def dfsRandom(self, i, j):
+
+        # adds to queue
+        #if self.grid[self.s.x][self.s.y] != 'S':
+        self.Path.append([i, j])
+        self.ifVisited[i][j] = 1
+
+        if self.grid[i][j] == "F":
+            # print("Found solution")
+            return True # 'True' ends dfs and begins to roll recursion back
+        for x in range(20):
+            rand = random.randint(0, 3)
+            # up
+            if rand == 0:
+                if 0 <= i - 1 <= self.N - 1 and 0 <= j <= self.M - 1: # if is still in maze's height and width
+                    if self.grid[i - 1][j] != "X" and self.ifVisited[i - 1][j] == 0: # if block is not 'X' and if not visited before
+                        # print("u -> ", end = '')
+                        if self.dfsRandom(i - 1, j) == True:
+                            self.grid[i][j] = "1"
+                            self.grid[self.s.x][self.s.y] = "S"
+                            return True
+
+            # right
+            if rand == 1:
+                if 0 <= i <= self.N - 1 and 0 <= j + 1 <= self.M - 1:
+                    if self.grid[i][j + 1] != "X" and self.ifVisited[i][j + 1] == 0:
+                        # print("r -> ", end = '')
+                        if self.dfsRandom(i, j + 1) == True:
+                            self.grid[i][j] = "1"
+                            self.grid[self.s.x][self.s.y] = "S"
+                            return True
+
+            # down
+            if rand == 2:
+                if 0 <= i + 1 <= self.N - 1 and 0 <= j <= self.M - 1:
+                    if self.grid[i + 1][j] != "X" and self.ifVisited[i + 1][j] == 0:
+                        # print("d -> ", end = '')
+                        if self.dfsRandom(i + 1, j) == True:
+                            self.grid[i][j] = "1"
+                            self.grid[self.s.x][self.s.y] = "S"
+                            return True
+
+            # left
+            if rand == 3:
+                if 0 <= i <= self.N - 1 and 0 <= j - 1 <= self.M - 1:
+                    if self.grid[i][j - 1] != "X" and self.ifVisited[i][j - 1] == 0:
+                        # print("l -> ", end = '')
+                        if self.dfsRandom(i, j - 1) == True:
+                            self.grid[i][j] = "1"
+                            self.grid[self.s.x][self.s.y] = "S"
+                            return True
+        # Removes from queue
+        self.Path.pop()
+        self.grid[self.s.x][self.s.y] = "S"
+        return False
+
+    def bfs(self, i, j):
+        Q = queue.Queue(maxsize=0)
+
+        Q.put([i, j])
+        # Q.put([i,j])
         current = Q.get()
-        Path.append(current)
-        i = current[0]
-        j = current[1]
-        ifVisited[current[0]][current[1]] = 1
 
-        '''if board1[current[0]][current[1]] == "F":
-            print("Found solution!")'''
+        self.ifVisited[i][j] = 1
 
-    for a in Path:
-        board1[a[0]][a[1]] = "1"
+        while self.grid[current[0]][current[1]] != "F":
+            # up
+            if 0 <= i - 1 <= self.N - 1 and 0 <= j <= self.M - 1:
+                if self.grid[i - 1][j] != "X" and self.ifVisited[i - 1][j] == 0:
+                    # print("u -> ", end = '')
+                    Q.put([i - 1, j])
 
-    # print(Path)
-    board1[s[0]][s[1]] = "S"
-    board1[f[0]][f[1]] = "F"
+            # right
+            if 0 <= i <= self.N - 1 and 0 <= j + 1 <= self.M - 1:
+                if self.grid[i][j + 1] != "X" and self.ifVisited[i][j + 1] == 0:
+                    # print("r -> ", end = '')
+                    Q.put([i, j + 1])
+
+            # down
+            if 0 <= i + 1 <= self.N - 1 and 0 <= j <= self.M - 1:
+                if self.grid[i + 1][j] != "X" and self.ifVisited[i + 1][j] == 0:
+                    # print("d -> ", end = '')
+                    Q.put([i + 1, j])
+
+            # left
+            if 0 <= i <= self.N - 1 and 0 <= j - 1 <= self.M - 1:
+                if self.grid[i][j - 1] != "X" and self.ifVisited[i][j - 1] == 0:
+                    # print("l -> ", end = '')
+                    Q.put([i, j - 1])
+
+            current = Q.get()
+            i = current[0]
+            j = current[1]
+            if self.ifVisited[i][j] == 0:
+                self.Path.append(current)
+            self.ifVisited[current[0]][current[1]] = 1
+
+        for a in self.Path:
+            self.grid[a[0]][a[1]] = "1"
+
+        # print(Path)
+        self.grid[self.s.x][self.s.y] = "S"
+        self.grid[self.f.x][self.f.y] = "F"
 
 
 def maze_generator(N=18):
@@ -231,39 +228,6 @@ def maze_generator(N=18):
                     # maze[x+1][y-1] = 'X'
 
 
-
-                # if (x, y) == (s1 - 1, s2):
-                #     visited[x + 1][y] = True
-                #     visited[x][y - 1] = True
-                #     visited[x][y + 1] = True
-                #     maze[x + 1][y] = 'X'
-                #     maze[x][y - 1] = 'X'
-                #     maze[x][y + 1] = 'X'
-                # if (x, y) == (s1 + 1, s2):
-                #     visited[x - 1][y] = True
-                #     visited[x][y + 1] = True
-                #     visited[x][y - 1] = True
-                #     maze[x - 1][y] = 'X'
-                #     maze[x][y + 1] = 'X'
-                #     maze[x][y - 1] = 'X'
-                # if (x, y) == (s1, s2 - 1):
-                #     visited[x + 1][y] = True
-                #     visited[x - 1][y] = True
-                #     visited[x][y + 1] = True
-                #     maze[x + 1][y] = 'X'
-                #     maze[x - 1][y] = 'X'
-                #     maze[x][y + 1] = 'X'
-                # if (x, y) == (s1, s2 + 1):
-                #     visited[x + 1][y] = True
-                #     visited[x - 1][y] = True
-                #     visited[x][y - 1] = True
-                #     maze[x + 1][y] = 'X'
-                #     maze[x - 1][y] = 'X'
-                #     maze[x][y - 1] = 'X'
-                print('\n'.join([''.join(['{:4}'.format(item) for item in row])
-                                 for row in maze]))
-                print('\n')
-
                 create_maze(y, x)
 
     create_maze(randrange(N), randrange(N))
@@ -278,29 +242,13 @@ def maze_generator(N=18):
     maze[finish_x][finish_y] = 'F'
     visited[finish_x][finish_y] = True
 
-    print('\n'.join([''.join(['{:4}'.format(item) for item in row])
-                     for row in maze]))
+    #print('\n'.join([''.join(['{:4}'.format(item) for item in row])
+    #                 for row in maze]))
+    labirynth = Maze(maze, start_x, start_y, finish_x, finish_y)
+    
+    #board1 = Maze.board1
+    N = len(maze)  # rows
+    M = len(maze[0])  # columns
+    ifVisited = [[0 for x in range(M)] for y in range(N)]  # 2d array telling if we already visited particular block
 
-    return maze
-
-#
-# def maze_generator(height, weigth):
-#     counter = 0
-#     maze = [['X' for _ in range(height)] for _ in range(weigth)]
-#     set_list = [set() for _ in range(height*weigth)]
-#     set_union = set()
-#     for h in range(height):
-#         for w in range(weigth):
-#             set_list[counter] = set(maze[w][h])
-#             counter += 1
-#
-#     for x in set_list:
-#         set_union |= x
-#
-#     # counter = 0
-#     # for h in range(height):
-#     #     for w in range(weigth):
-#     #         print(set_list[counter])
-#     #         counter+=1
-#
-#     print(set_union)
+    return labirynth
