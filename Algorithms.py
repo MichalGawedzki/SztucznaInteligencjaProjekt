@@ -222,5 +222,3 @@ class Maze:
         grid[self.s.x][self.s.y] = "S"
         grid[self.f.x][self.f.y] = "F"
 
-
-

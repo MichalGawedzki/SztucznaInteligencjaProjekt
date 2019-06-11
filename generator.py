@@ -52,10 +52,12 @@ class Greenblock(Block):
         Block.__init__(self)
         self.color("green")
 
+
 class Blueblock(Block):
     def __init__(self):
         Block.__init__(self)
         self.color("blue")
+
 
 class Greyblock(Block):
     def __init__(self):
@@ -64,6 +66,13 @@ class Greyblock(Block):
 
 
 def draw_maze(board, Path, been):
+
+    w_block = Whiteblock()
+    g_block = Greenblock()
+    r_block = Redblock()
+    b_block = Blueblock()
+    gr_block = Greyblock()
+
     window = turtle.Screen()
     window.bgcolor("black")
     window.setup(width=0.6, height=0.6, startx=None, starty=None)
@@ -93,7 +102,7 @@ def draw_maze(board, Path, been):
 
         gr_block.goto(x_navigate, y_navigate)
         gr_block.stamp()
-    
+
     for x in range(len(Path)):
         sign = Path[x]
 
@@ -106,11 +115,6 @@ def draw_maze(board, Path, been):
 
     window.exitonclick()
 
-w_block = Whiteblock()
-g_block = Greenblock()
-r_block = Redblock()
-b_block = Blueblock()
-gr_block = Greyblock()
 
 boards = []
 boards.append(board1)
@@ -310,7 +314,6 @@ def prim_generator(N,M):
     while grid[fx][fy] != " " or fx == sx or fy == sy:
         fx = randrange(int(1), width-1)
         fy = randrange(int(1), height-1)
-        print(str(fx) +" " + str(fy))
     grid[sx][sy] = "S"
     grid[fx][fy] = "F"
     labirynth = Algorithms.Maze(grid, sx, sy, fx, fy)
