@@ -111,7 +111,7 @@ class Maze:
         # print("grid: ")
         # print(grid)
 
-        print(self.dfsLen)
+        #print(self.dfsLen)
 
 
     def dfsRandom(self, i, j):
@@ -171,6 +171,10 @@ class Maze:
         return False
 
     def bfs(self, i, j):
+
+        self.prepare()
+        grid = deepcopy(self.GRID)
+
         Q = queue.Queue(maxsize=0)
 
         Q.put([i, j])
@@ -179,28 +183,28 @@ class Maze:
 
         self.ifVisited[i][j] = 1
 
-        while self.grid[current[0]][current[1]] != "F":
+        while grid[current[0]][current[1]] != "F":
             # up
             if 0 <= i - 1 <= self.N - 1 and 0 <= j <= self.M - 1:
-                if self.grid[i - 1][j] != "X" and self.ifVisited[i - 1][j] == 0:
+                if grid[i - 1][j] != "X" and self.ifVisited[i - 1][j] == 0:
                     # print("u -> ", end = '')
                     Q.put([i - 1, j])
 
             # right
             if 0 <= i <= self.N - 1 and 0 <= j + 1 <= self.M - 1:
-                if self.grid[i][j + 1] != "X" and self.ifVisited[i][j + 1] == 0:
+                if grid[i][j + 1] != "X" and self.ifVisited[i][j + 1] == 0:
                     # print("r -> ", end = '')
                     Q.put([i, j + 1])
 
             # down
             if 0 <= i + 1 <= self.N - 1 and 0 <= j <= self.M - 1:
-                if self.grid[i + 1][j] != "X" and self.ifVisited[i + 1][j] == 0:
+                if grid[i + 1][j] != "X" and self.ifVisited[i + 1][j] == 0:
                     # print("d -> ", end = '')
                     Q.put([i + 1, j])
 
             # left
             if 0 <= i <= self.N - 1 and 0 <= j - 1 <= self.M - 1:
-                if self.grid[i][j - 1] != "X" and self.ifVisited[i][j - 1] == 0:
+                if grid[i][j - 1] != "X" and self.ifVisited[i][j - 1] == 0:
                     # print("l -> ", end = '')
                     Q.put([i, j - 1])
 
@@ -212,11 +216,11 @@ class Maze:
             self.ifVisited[current[0]][current[1]] = 1
 
         for a in self.Path:
-            self.grid[a[0]][a[1]] = "1"
+            grid[a[0]][a[1]] = "1"
 
         # print(Path)
-        self.grid[self.s.x][self.s.y] = "S"
-        self.grid[self.f.x][self.f.y] = "F"
+        grid[self.s.x][self.s.y] = "S"
+        grid[self.f.x][self.f.y] = "F"
 
 
 

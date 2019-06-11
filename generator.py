@@ -64,11 +64,9 @@ class Greyblock(Block):
 
 
 def draw_maze(board, Path, been):
-
     window = turtle.Screen()
     window.bgcolor("black")
     window.setup(width=0.6, height=0.6, startx=None, starty=None)
-
     for x in range(len(board)):
         for y in range(len(board[x])):
             sign = board[x][y]
@@ -199,71 +197,107 @@ def prim_generator(N,M):
     #print(grid)
     height, width = N, M
     walls = []
-    counter = 0
+    counter1 = 0
+    counter2 = 0
+    counter3 = 0
+    counter4 = 0
 
-    sx, sy = 2, 2
+    sx, sy = 1, 5
 
-    #start_x = randrange(1, int(breadth/4))
-    #start_y = randrange(1, int(width/4))
+    sx = randrange(1, int(width-1))
+    sy = randrange(1, int(height-1))
 
     ifVisited[sx][sy] = 1
     grid[sx][sy] = "S"
 
     walls.append([sx+1, sy])
     neighbours[sx+1][sy] = 1
+
     walls.append([sx-1, sy])
     neighbours[sx-1][sy] = 1
+
     walls.append([sx, sy+1])
     neighbours[sx][sy+1] = 1
+
     walls.append([sx, sy-1])
     neighbours[sx][sy-1] = 1
 
     while walls:
         counter = 0
-        current = walls[randint(0, len(walls)-1)]
+        counter1 = 0
+        counter2 = 0
+        counter3 = 0
+        counter4 = 0
+        ind = randint(0, len(walls)-1)
+        current = walls[ind]
         
         x, y = current[0], current[1]
 
-        if 0 < x+1 < N and 0 < y < M:
-            if ifVisited[x+1][y] == 1:# or neighbours[x+1][y] == 1:
-                counter += 1
+        if 1 < x+1 < N-1 and 1 < y < M-1:
+            if ifVisited[x+1][y] == 1:
+                counter1 += 1
         
-        if 0 < x-1 < N and 0 < y < M:
-            if ifVisited[x-1][y] == 1:# or neighbours[x-1][y] == 1:
-                counter += 1
+        if 1 < x-1 < N-1 and 1 < y < M-1:
+            if ifVisited[x-1][y] == 1:
+                counter1 += 1
         
-        if 0 < x < N and 0 < y+1 < M:
-            if ifVisited[x][y+1] == 1:# or neighbours[x][y+1] == 1:
-                counter += 1
+        if 1 < x < N-1 and 1 < y+1 < M-1:
+            if ifVisited[x][y+1] == 1:
+                counter2 += 1
         
-        if 0 < x < N and 0 < y-1 < M:
-            if ifVisited[x][y-1] == 1:# or neighbours[x][y-1] == 1:
-                counter += 1
+        if 1 < x < N-1 and 1 < y-1 < M-1:
+            if ifVisited[x][y-1] == 1:
+                counter2 += 1
 
-        if counter <=1:
+        
+        if 1 < x-1 < N-1 and 1 < y-1 < M-1:
+            if ifVisited[x-1][y-1] == 1:
+                counter3 += 1
+
+        if 1 < x-1 < N-1 and 1 < y+1 < M-1:
+            if ifVisited[x-1][y+1] == 1:
+                counter3 += 1
+
+        if 1 < x+1 < N-1 and 1 < y-1 < M-1:
+            if ifVisited[x+1][y-1] == 1:
+                counter4 += 1
+
+        if 1 < x+1 < N-1 and 1 < y+1 < M-1:
+            if ifVisited[x+1][y+1] == 1:
+                counter4 += 1
+
+        
+        counter = counter1 + counter2 + counter3 + counter4
+
+
+        if counter1 <= 1 and counter2 <= 1 and counter3 <= 1 and counter4 <= 1 and counter <= 2:
 
             grid[x][y] = " "
             ifVisited[x][y] = 1
 
-            if 0 < x+1 < N and 0 < y < M:
-                if neighbours[x+1][y] == 0:
+            if 0 < x+1 < N-1 and 0 < y < M-1:
+                if [x+1,y] not in walls and neighbours[x+1][y] == 0:
                     walls.append([x+1,y])
+                    neighbours[x+1][y] = 1
 
-            if 0 < x-1 < N and 0 < y < M:
-                if neighbours[x-1][y] == 0:
+
+            if 0 < x-1 < N-1 and 0 < y < M-1:
+                if [x-1,y] not in walls and neighbours[x-1][y] == 0:
                     walls.append([x-1,y])
+                    neighbours[x-1][y] = 1
 
-            if 0 < x < N and 0 < y+1 < M:
-                if neighbours[x][y+1] == 0:
+            if 0 < x < N-1 and 0 < y+1 < M-1:
+                if [x,y+1] not in walls and neighbours[x][y+1] == 0:
                     walls.append([x,y+1])
+                    neighbours[x][y+1] = 1
 
-            if 0 < x < N and 0 < y-1 < M:
-                if neighbours[x][y-1] == 0:
+            if 0 < x < N-1 and 0 < y-1 < M-1:
+                if [x,y-1] not in walls and neighbours[x][y-1] == 0:
                     walls.append([x,y-1])
+                    neighbours[x][y-1] = 1
 
         
-        walls.pop(0)
-
+        walls.pop(ind)
 
     for x in range(N):
         grid[x][0], grid[x][M-1] = "X", "X"
@@ -273,15 +307,12 @@ def prim_generator(N,M):
 
     fx = 0
     fy = 0
-
-    while grid[fx][fy] != " ":
-        fx = randrange(int(3*height/4), height-1)
-        fy = randrange(int(3*width/4), width-1)
+    while grid[fx][fy] != " " or fx == sx or fy == sy:
+        fx = randrange(int(1), width-1)
+        fy = randrange(int(1), height-1)
+        print(str(fx) +" " + str(fy))
     grid[sx][sy] = "S"
     grid[fx][fy] = "F"
-    
-
-    print(grid)
     labirynth = Algorithms.Maze(grid, sx, sy, fx, fy)
     return labirynth
 
