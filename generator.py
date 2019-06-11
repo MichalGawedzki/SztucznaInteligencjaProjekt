@@ -4,6 +4,7 @@ import queue
 import Algorithms
 from pprint import pprint
 from random import randrange, shuffle, random, randint
+import time
 
 # S - start, F - finish, X - the wall, blank space - path
 
@@ -52,12 +53,10 @@ class Greenblock(Block):
         Block.__init__(self)
         self.color("green")
 
-
 class Blueblock(Block):
     def __init__(self):
         Block.__init__(self)
         self.color("blue")
-
 
 class Greyblock(Block):
     def __init__(self):
@@ -102,7 +101,7 @@ def draw_maze(board, Path, been):
 
         gr_block.goto(x_navigate, y_navigate)
         gr_block.stamp()
-
+    
     for x in range(len(Path)):
         sign = Path[x]
 
@@ -113,84 +112,12 @@ def draw_maze(board, Path, been):
         b_block.goto(x_navigate, y_navigate)
         b_block.stamp()
 
-    window.exitonclick()
+    time.sleep(3)
+    window.resetscreen()
 
 
-boards = []
-boards.append(board1)
 
 #draw_maze(boards[0])
-
-def maze_generator(N):
-
-    loop_counter = 0
-    breadth, width = N, N
-    maze = [['X' for _ in range(N)] for _ in range(N)]
-    visited = [[False for _ in range(N)] for _ in range(N)]
-    # vertical = [["|  "] * w + ['|'] for _ in range(b)] + [[]]
-    # horizontal = [["+--"] * w + ['+'] for _ in range(w + 1)]
-
-    for N in range(breadth):
-        for N in range(width):
-            maze[N][N] = 'X'
-    for N in range(breadth):
-        for N in range(width):
-            visited[N][N] = False
-
-    def create_maze(s2, s1):
-
-        if s2 == 0 or s2 == N or s1 == 0 or s1 == N and loop_counter == 0:
-            counter = 1
-            return create_maze(2, 2)
-
-        visited[s2][s1] = True  # Start
-        maze[s2][s1] = ' '
-
-        neighbours = [(s1 - 1, s2), (s1, s2 + 1), (s1 + 1, s2), (s1, s2 - 1)]
-        shuffle(neighbours)
-
-        for (y, x) in neighbours:
-            if 1 <= x <= N - 1 and 1 <= y <= N - 1:
-                if visited[y][x]:
-                    continue
-                if visited[y-1][x] and visited[y][x-1]:
-                    visited[y-1][x-1] = True
-                    # maze[x-1][y-1] = 'X'
-                if visited[y-1][x] and visited[y][x+1]:
-                    visited[y-1][x+1] = True
-                    # maze[x-1][y+1] = 'X'
-                if visited[y+1][x] and visited[y][x+1]:
-                    visited[y+1][x+1] = True
-                    # maze[x+1][y+1] = 'X'
-                if visited[y+1][x] and visited[y][x-1]:
-                    visited[y+1][x-1] = True
-                    # maze[x+1][y-1] = 'X'
-
-
-                create_maze(y, x)
-
-    create_maze(randrange(N), randrange(N))
-    counter = 0
-
-    start_x = randrange(1, int(breadth/4))
-    start_y = randrange(1, int(width/4))
-    finish_x = randrange(int(3*breadth/4), breadth-1)
-    finish_y = randrange(int(3*width/4), width-1)
-    maze[start_x][start_y] = 'S'
-    visited[start_x][start_y] = True
-    maze[finish_x][finish_y] = 'F'
-    visited[finish_x][finish_y] = True
-
-    #print('\n'.join([''.join(['{:4}'.format(item) for item in row])
-    #                 for row in maze]))
-    labirynth = Algorithms.Maze(maze, start_x, start_y, finish_x, finish_y)
-    
-    #board1 = Maze.board1
-    N = len(maze)  # rows
-    M = len(maze[0])  # columns
-    ifVisited = [[0 for x in range(M)] for y in range(N)]  # 2d array telling if we already visited particular block
-
-    return labirynth
 
 
 def prim_generator(N,M):
@@ -208,8 +135,11 @@ def prim_generator(N,M):
 
     sx, sy = 1, 5
 
-    sx = randrange(1, int(width-1))
-    sy = randrange(1, int(height-1))
+    sx = randrange(1, N-1)
+    sy = randrange(1, M-1)
+
+    sx = randrange(1, int(M/4))
+    sy = randrange(1, int(N/4))
 
     ifVisited[sx][sy] = 1
     grid[sx][sy] = "S"
@@ -312,8 +242,12 @@ def prim_generator(N,M):
     fx = 0
     fy = 0
     while grid[fx][fy] != " " or fx == sx or fy == sy:
-        fx = randrange(int(1), width-1)
-        fy = randrange(int(1), height-1)
+        # fx = randrange(int(1), N-1)
+        # fy = randrange(int(1), M-1)
+
+        fx = randrange(int(3*M/4), M-1)
+        fy = randrange(int(3*N/4), N-1)
+
     grid[sx][sy] = "S"
     grid[fx][fy] = "F"
     labirynth = Algorithms.Maze(grid, sx, sy, fx, fy)
