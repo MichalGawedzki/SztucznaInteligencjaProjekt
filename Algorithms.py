@@ -4,6 +4,7 @@ from random import randrange, shuffle, random
 import random
 import numpy as np
 from copy import copy, deepcopy
+from heapq import *
 
 class Point:
     def __init__(self, x, y):
@@ -20,6 +21,7 @@ class Maze:
         # self.f_y = f_y
         self.dfsLen = 0
         self.bfsLen = 0
+        self.astarLen = 0
         self.GRID = grid
         self.s = Point(s_x, s_y)
         self.f = Point(f_x, f_y)
@@ -175,10 +177,11 @@ class Maze:
         self.prepare()
         grid = deepcopy(self.GRID)
 
+        Pred = []
+
         Q = queue.Queue(maxsize=0)
 
         Q.put([i, j])
-        # Q.put([i,j])
         current = Q.get()
 
         self.ifVisited[i][j] = 1
@@ -223,4 +226,80 @@ class Maze:
         grid[self.f.x][self.f.y] = "F"
 
 
+
+
+
+
+
+################################################################################################
+
+
+
+
+
+
+    # def heuristic(self, a, b):
+    #     return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
+
+
+    def astar(self, array, start, goal):
+
+        def heuristic(a, b):
+            return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
+
+        neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
+
+        close_set = set()
+        came_from = {}
+        gscore = {start:0}
+        fscore = {start:heuristic(start, goal)}
+        oheap = []
+
+        heappush(oheap, (fscore[start], start))
+
+        
+        
+        while oheap:
+
+            current = heappop(oheap)[1]
+            self.been.append(current)
+
+            if current == goal:
+                data = []
+                while current in came_from:
+                    data.append(current)
+                    current = came_from[current]
+                self.Path = data
+                self.Path.reverse()
+                self.astarLen = len(self.Path) -1
+                #print(self.astarLen)
+                self.Path.pop(0)
+                self.been.pop(0)
+                return data
+
+            close_set.add(current)
+            for i, j in neighbors:
+                neighbor = current[0] + i, current[1] + j            
+                tentative_g_score = gscore[current] + heuristic(current, neighbor)
+                if 0 <= neighbor[0] < array.shape[0]:
+                    if 0 <= neighbor[1] < array.shape[1]:                
+                        if array[neighbor[0]][neighbor[1]] == 'X':
+                            continue
+                    else:
+                        # array bound y walls
+                        continue
+                else:
+                    # array bound x walls
+                    continue
+                    
+                if neighbor in close_set and tentative_g_score >= gscore.get(neighbor, 0):
+                    continue
+                    
+                if  tentative_g_score < gscore.get(neighbor, 0) or neighbor not in [i[1]for i in oheap]:
+                    came_from[neighbor] = current
+                    gscore[neighbor] = tentative_g_score
+                    fscore[neighbor] = tentative_g_score + heuristic(neighbor, goal)
+                    heappush(oheap, (fscore[neighbor], neighbor))
+                    
+        return False
 

@@ -64,6 +64,13 @@ class Greyblock(Block):
 
 
 def draw_maze(board, Path, been):
+
+    w_block = Whiteblock()
+    g_block = Greenblock()
+    r_block = Redblock()
+    b_block = Blueblock()
+    gr_block = Greyblock()
+
     window = turtle.Screen()
     window.bgcolor("black")
     window.setup(width=0.6, height=0.6, startx=None, starty=None)
@@ -105,12 +112,6 @@ def draw_maze(board, Path, been):
         b_block.stamp()
 
     window.exitonclick()
-
-w_block = Whiteblock()
-g_block = Greenblock()
-r_block = Redblock()
-b_block = Blueblock()
-gr_block = Greyblock()
 
 boards = []
 boards.append(board1)
@@ -204,8 +205,11 @@ def prim_generator(N,M):
 
     sx, sy = 1, 5
 
-    sx = randrange(1, int(width-1))
-    sy = randrange(1, int(height-1))
+    sx = randrange(1, N-1)
+    sy = randrange(1, M-1)
+
+    sx = randrange(1, int(M/4))
+    sy = randrange(1, int(N/4))
 
     ifVisited[sx][sy] = 1
     grid[sx][sy] = "S"
@@ -308,9 +312,12 @@ def prim_generator(N,M):
     fx = 0
     fy = 0
     while grid[fx][fy] != " " or fx == sx or fy == sy:
-        fx = randrange(int(1), width-1)
-        fy = randrange(int(1), height-1)
-        print(str(fx) +" " + str(fy))
+        # fx = randrange(int(1), N-1)
+        # fy = randrange(int(1), M-1)
+
+        fx = randrange(int(3*M/4), M-1)
+        fy = randrange(int(3*N/4), N-1)
+
     grid[sx][sy] = "S"
     grid[fx][fy] = "F"
     labirynth = Algorithms.Maze(grid, sx, sy, fx, fy)
