@@ -1,4 +1,6 @@
 import turtle
+from functools import partial
+
 import generator
 import Algorithms
 import tkinter as tk
@@ -90,7 +92,9 @@ def compare(number, n, m):
     plt.show()
 
 
-
+def close_turtle():
+    window.bye()
+    root.destroy()
 
 
 
@@ -149,9 +153,7 @@ go = tk.Button(master=back, text='Generate and compare 1000 mazes and compare'
 go.pack(padx=5, pady=5)
 
 
-
-
-close = tk.Button(master=back, text='Quit', command=root.destroy)
+close = tk.Button(master=back, text='Quit', command=close_turtle)
 close.pack(padx=5, pady=5)
 
 
