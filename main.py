@@ -1,4 +1,6 @@
 import turtle
+from functools import partial
+
 import generator
 import Algorithms
 import tkinter as tk
@@ -48,7 +50,7 @@ def compare(number, n, m):
     count_dfs = 0
     count_astar_dfs = 0
 
-    labels = ["DFS", "A*", "A* / DFS"]
+    labels = ["DFS", "BFS", "A*", "A* / DFS"]
 
     for y in range(number):
         maze = generator.prim_generator(n, m)
@@ -69,20 +71,17 @@ def compare(number, n, m):
                 the_best = maze.astarLen
                 best_alg = "A* / DFS"
                 count_astar_dfs += 1
+        if maze.bfsLen < the_best:
+            the_best = maze.bfsLen
+            best_alg = "BFS"
+            count_bfs += 1
 
         else:
             count_dfs += 1
 
-
-        # if maze.bfsLen < the_best:
-        #     the_best = maze.bfsLen
-        #     print(maze.get_bfsLen())
-        #     print("BFS")
-        #     best_alg = "BFS"
-
         result.append(best_alg)
 
-    values = [count_dfs, count_astar, count_astar_dfs]
+    values = [count_dfs, count_bfs, count_astar, count_astar_dfs]
 
     plt.figure(figsize=(5, 5))
     plt.pie(values, labels=labels, autopct="%.1f%%")
@@ -90,7 +89,9 @@ def compare(number, n, m):
     plt.show()
 
 
-
+def close_turtle():
+    window.bye()
+    root.destroy()
 
 
 
@@ -149,9 +150,7 @@ go = tk.Button(master=back, text='Generate and compare 1000 mazes and compare'
 go.pack(padx=5, pady=5)
 
 
-
-
-close = tk.Button(master=back, text='Quit', command=root.destroy)
+close = tk.Button(master=back, text='Quit', command=close_turtle)
 close.pack(padx=5, pady=5)
 
 
